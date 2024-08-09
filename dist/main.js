@@ -135,6 +135,9 @@ class Firework {
                     }
                     this.particles.push(new Particle(this.x, this.y, color));
                 }
+                setTimeout(() => {
+                    fireworks.splice(fireworks.indexOf(this), 1);
+                }, 3000);
             }
         }
         else {
@@ -204,10 +207,10 @@ function animate() {
     ctx.fillText("决明子祝各位群友七夕快乐", canvas.width / 2, canvas.height / 2);
     ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    fireworks.forEach(firework => {
+    for (const firework of fireworks) {
         firework.update();
         firework.draw();
-    });
+    }
     requestAnimationFrame(animate);
 }
 function lerp(a, b, t) {
