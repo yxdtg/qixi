@@ -4,6 +4,14 @@ const ctx = canvas.getContext("2d");
 window.addEventListener("resize", () => {
     updateCanvasSize();
 });
+window.addEventListener("click", (e) => {
+    // 判断是否点击右上角
+    if (e.clientX > canvas.width - 100 && e.clientY < 100) {
+        for (let i = 0; i < 20; i++) {
+            createFirework();
+        }
+    }
+});
 function updateCanvasSize() {
     canvas.width = document.body.clientWidth;
     canvas.height = document.body.clientHeight;
@@ -109,7 +117,7 @@ class Firework {
             this.isFixedColor = false;
         }
         this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
-        this.maxMoveCount = Math.floor(Math.random() * 50) + 200;
+        this.maxMoveCount = Math.floor(Math.random() * 50) + 150;
     }
     update() {
         if (this.moveCount < this.maxMoveCount) {
@@ -171,7 +179,7 @@ function animate() {
     if (createFireworkTime >= maxCreateFireworkTime) {
         createFireworkTime = 0;
         createFirework();
-        maxCreateFireworkTime = Math.floor(Math.random() * 1000) + 500;
+        maxCreateFireworkTime = Math.floor(Math.random() * 1000) + 1000;
     }
     drawStars(elapsed);
     if (isAddOpacity && textOpacity > 1) {
@@ -188,7 +196,7 @@ function animate() {
     else {
         textOpacity -= textOpacityAdd;
     }
-    ctx.font = "48px Arial";
+    ctx.font = "24px Arial";
     textColor.r = Math.floor(lerp(textColor.r, textTargetColor.r, 0.01));
     textColor.g = Math.floor(lerp(textColor.g, textTargetColor.g, 0.01));
     textColor.b = Math.floor(lerp(textColor.b, textTargetColor.b, 0.01));
