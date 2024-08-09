@@ -201,7 +201,7 @@ function animate() {
     textColor.b = Math.floor(lerp(textColor.b, textTargetColor.b, 0.01));
     ctx.fillStyle = `rgba(${textColor.r}, ${textColor.g}, ${textColor.b}, ${textOpacity})`;
     ctx.textAlign = "center";
-    ctx.fillText("祝各位群友七夕快乐", canvas.width / 2, canvas.height / 2);
+    ctx.fillText("决明子祝各位群友七夕快乐", canvas.width / 2, canvas.height / 2);
     ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     fireworks.forEach(firework => {
