@@ -7,7 +7,7 @@ window.addEventListener("resize", () => {
 window.addEventListener("click", (e) => {
     // 判断是否点击右上角
     if (e.clientX > canvas.width - 100 && e.clientY < 100) {
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 10; i++) {
             createFirework();
         }
     }
@@ -116,7 +116,7 @@ class Firework {
         if (Math.random() < 0.1) {
             this.isFixedColor = false;
         }
-        this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        this.color = `hsl(${Math.floor(Math.random() * 361)}, 100%, 50%)`;
         this.maxMoveCount = Math.floor(Math.random() * 50) + 150;
     }
     update() {
@@ -131,7 +131,7 @@ class Firework {
                 for (let i = 0; i < 100; i++) {
                     let color = this.color;
                     if (!this.isFixedColor) {
-                        color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                        color = `hsl(${Math.floor(Math.random() * 361)}, 100%, 50%)`;
                     }
                     this.particles.push(new Particle(this.x, this.y, color));
                 }
@@ -173,7 +173,6 @@ function animate() {
         textTargetColor.r = rgb.r;
         textTargetColor.g = rgb.g;
         textTargetColor.b = rgb.b;
-        console.log(textTargetColor);
     }
     createFireworkTime += elapsed;
     if (createFireworkTime >= maxCreateFireworkTime) {
