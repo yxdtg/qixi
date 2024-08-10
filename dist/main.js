@@ -20,11 +20,11 @@ window.addEventListener("click", (e) => {
         audio.onloadeddata = () => {
             console.log("audio loaded");
             audio.play();
-            isStart = true;
-            topText = "祝大家七夕快乐";
-            textPosY = 48;
         };
         audio.loop = true;
+        isStart = true;
+        topText = "祝大家七夕快乐";
+        textPosY = 48;
     }
 });
 function updateCanvasSize() {
