@@ -1,5 +1,7 @@
 "use strict";
+let isStart = false;
 let isPlayAudio = false;
+let topText = "点击屏幕开始";
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 window.addEventListener("resize", () => {
@@ -7,7 +9,7 @@ window.addEventListener("resize", () => {
 });
 window.addEventListener("click", (e) => {
     // 判断是否点击右上角
-    if (e.clientX > canvas.width - 100 && e.clientY < 100) {
+    if (e.clientX > canvas.width - 70 && e.clientY < 70) {
         for (let i = 0; i < 10; i++) {
             createFirework();
         }
@@ -15,8 +17,14 @@ window.addEventListener("click", (e) => {
     if (!isPlayAudio) {
         isPlayAudio = true;
         const audio = new Audio("./audio/qixi.mp3");
+        audio.onloadeddata = () => {
+            console.log("audio loaded");
+            audio.play();
+            isStart = true;
+            topText = "祝大家七夕快乐";
+            textPosY = 48;
+        };
         audio.loop = true;
-        audio.play();
     }
 });
 function updateCanvasSize() {
@@ -24,21 +32,20 @@ function updateCanvasSize() {
     canvas.height = document.body.clientHeight;
 }
 updateCanvasSize();
-// 绘制七夕主题
+let textPosY = canvas.height / 2;
 function drawQixi() {
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
-// 星星类
 class Star {
     constructor() {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
         this.size = Math.random() * 2 + 1;
         this.opacity = Math.random();
-        this.flickerInterval = Math.random() * 1000 + 500; // 闪烁间隔
+        this.flickerInterval = Math.random() * 1000 + 500;
         this.flickerTimer = 0;
-        this.flickerState = 1; // 闪烁状态，1为亮，0为暗
+        this.flickerState = 1;
     }
     update(elapsed) {
         this.flickerTimer += elapsed;
@@ -81,14 +88,12 @@ const stars = [];
 for (let i = 0; i < 100; i++) {
     stars.push(new Star());
 }
-// 绘制星空背景
 function drawStars(elapsed) {
     stars.forEach(star => {
         star.update(elapsed);
         star.draw();
     });
 }
-// 烟花粒子
 class Particle {
     constructor(x, y, color) {
         this.x = x;
@@ -101,7 +106,7 @@ class Particle {
     update() {
         this.x += this.vx;
         this.y += this.vy;
-        this.vy += 0.05; // 重力效果
+        this.vy += 0.05;
     }
     draw() {
         ctx.beginPath();
@@ -110,7 +115,6 @@ class Particle {
         ctx.fill();
     }
 }
-// 烟花
 class Firework {
     constructor(x, y) {
         this.particles = [];
@@ -170,7 +174,7 @@ let textOpacityAdd = 0.005;
 let isAddOpacity = false;
 let textColor = { r: 255, g: 255, b: 255 };
 let textTargetColor = { r: 255, g: 255, b: 255 };
-let updateTextColorTime = 0;
+let updateTextColorTime = 2000;
 let maxUpdateTextColorTime = 3000;
 function animate() {
     time = performance.now();
@@ -184,13 +188,6 @@ function animate() {
         textTargetColor.g = rgb.g;
         textTargetColor.b = rgb.b;
     }
-    createFireworkTime += elapsed;
-    if (createFireworkTime >= maxCreateFireworkTime) {
-        createFireworkTime = 0;
-        createFirework();
-        maxCreateFireworkTime = Math.floor(Math.random() * 1000) + 1000;
-    }
-    drawStars(elapsed);
     if (isAddOpacity && textOpacity > 1) {
         isAddOpacity = false;
     }
@@ -205,20 +202,51 @@ function animate() {
     else {
         textOpacity -= textOpacityAdd;
     }
-    ctx.font = "28px Arial";
     textColor.r = Math.floor(lerp(textColor.r, textTargetColor.r, 0.01));
     textColor.g = Math.floor(lerp(textColor.g, textTargetColor.g, 0.01));
     textColor.b = Math.floor(lerp(textColor.b, textTargetColor.b, 0.01));
+    ctx.font = "28px Arial";
     ctx.fillStyle = `rgba(${textColor.r}, ${textColor.g}, ${textColor.b}, ${textOpacity})`;
     ctx.textAlign = "center";
-    ctx.fillText("祝大家七夕快乐", canvas.width / 2, 48);
+    ctx.fillText(topText, canvas.width / 2, textPosY);
+    if (isStart) {
+        createFireworkTime += elapsed;
+        if (createFireworkTime >= maxCreateFireworkTime) {
+            createFireworkTime = 0;
+            createFirework();
+            maxCreateFireworkTime = Math.floor(Math.random() * 1000) + 1000;
+        }
+        for (const firework of fireworks) {
+            firework.update();
+            firework.draw();
+        }
+        const ballSize = 50;
+        const ballX = canvas.width - ballSize - 10;
+        const ballY = 10;
+        drawYarnBall(ballX, ballY, ballSize);
+    }
     ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    for (const firework of fireworks) {
-        firework.update();
-        firework.draw();
-    }
+    drawStars(elapsed);
     requestAnimationFrame(animate);
+}
+function drawYarnBall(x, y, size) {
+    const colors = ["#ff99cc", "#ff6699", "#cc3366"];
+    for (let i = 0; i < 20; i++) {
+        const radius = size / 2 - i * 2;
+        if (radius > 0) {
+            ctx.beginPath();
+            ctx.arc(x + size / 2, y + size / 2, radius, 0, Math.PI * 2);
+            ctx.strokeStyle = colors[i % colors.length];
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]); // 设置虚线模式，模拟毛线的感觉
+            ctx.stroke();
+            ctx.closePath();
+        }
+    }
+    ctx.fillStyle = "red";
+    ctx.fill();
+    ctx.setLineDash([]); // 重置虚线模式
 }
 function lerp(a, b, t) {
     return a + (b - a) * t;
