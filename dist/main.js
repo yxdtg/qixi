@@ -1,4 +1,5 @@
 "use strict";
+let isPlayAudio = false;
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 window.addEventListener("resize", () => {
@@ -10,6 +11,12 @@ window.addEventListener("click", (e) => {
         for (let i = 0; i < 10; i++) {
             createFirework();
         }
+    }
+    if (!isPlayAudio) {
+        isPlayAudio = true;
+        const audio = new Audio("./audio/qixi.mp3");
+        audio.loop = true;
+        audio.play();
     }
 });
 function updateCanvasSize() {
@@ -198,13 +205,13 @@ function animate() {
     else {
         textOpacity -= textOpacityAdd;
     }
-    ctx.font = "24px Arial";
+    ctx.font = "28px Arial";
     textColor.r = Math.floor(lerp(textColor.r, textTargetColor.r, 0.01));
     textColor.g = Math.floor(lerp(textColor.g, textTargetColor.g, 0.01));
     textColor.b = Math.floor(lerp(textColor.b, textTargetColor.b, 0.01));
     ctx.fillStyle = `rgba(${textColor.r}, ${textColor.g}, ${textColor.b}, ${textOpacity})`;
     ctx.textAlign = "center";
-    ctx.fillText("祝大家七夕快乐", canvas.width / 2, 0 + 24);
+    ctx.fillText("祝大家七夕快乐", canvas.width / 2, 48);
     ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     for (const firework of fireworks) {
